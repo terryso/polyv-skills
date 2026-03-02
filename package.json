@@ -10,12 +10,20 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha 'tests/**/*.test.js'",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "mocha 'tests/unit/*.test.js'",
-    "test:e2e": "mocha 'tests/e2e/*.test.js'",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
     "config-test": "node tools/clis/polyv.js config-test"
   },
-  "keywords": ["polyv", "live-streaming", "claude-code", "skills", "api"],
+  "keywords": [
+    "polyv",
+    "live-streaming",
+    "claude-code",
+    "skills",
+    "api"
+  ],
   "author": "terryso",
   "license": "MIT",
   "repository": {
@@ -27,6 +35,7 @@
   },
   "homepage": "https://github.com/terryso/polyv-skills#readme",
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.3.3",
     "mocha": "^11.7.5",

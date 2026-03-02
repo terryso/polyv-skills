@@ -81,9 +81,29 @@ polyv-skills/
 ## 技术栈
 
 - 纯 JavaScript（ES2022+）
-- Node.js 18+
+- Node.js 18+（推荐 23+，使用 `.nvmrc` 自动切换）
+- 测试：Mocha（单元测试）+ Playwright（E2E 测试）
 - 无需编译步骤
 - 遵循 [Agent Skills 规范](https://agentskills.io)
+
+## 开发
+
+```bash
+# 安装依赖
+npm install
+
+# 运行所有测试
+npm test
+
+# 单元测试 (Mocha)
+npm run test:unit
+
+# E2E 测试 (Playwright)
+npm run test:e2e
+
+# E2E 测试 UI 模式
+npm run test:e2e:ui
+```
 
 ## 许可证
 

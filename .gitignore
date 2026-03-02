@@ -37,6 +37,11 @@ build/
 # Test coverage
 coverage/
 
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+
 # Temporary files
 tmp/
 temp/
