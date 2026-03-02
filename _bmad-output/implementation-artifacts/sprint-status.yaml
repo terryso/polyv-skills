@@ -51,5 +51,5 @@ development_status:
   epic-2: in-progress
   2-1-implement-polyv-cli-core: done
   2-2-create-polyv-create-channel-skill: done
-  2-3-implement-error-handling-and-debug-mode: backlog
+  2-3-implement-error-handling-and-debug-mode: review
   epic-2-retrospective: optional

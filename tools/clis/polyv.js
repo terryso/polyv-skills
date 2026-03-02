@@ -724,7 +724,11 @@ module.exports = {
   parseApiResponse,
   parseApiError,
   handleNetworkError,
-  createChannel
+  createChannel,
+
+  // Error handling constants (Story 2.3)
+  ERROR_CODE_MESSAGES,
+  ERROR_CODE_HINTS
 };
 
 // Run CLI if executed directly

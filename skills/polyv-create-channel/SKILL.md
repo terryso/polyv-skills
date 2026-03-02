@@ -56,6 +56,37 @@ node tools/clis/polyv.js create-channel --name "<频道名称>" [--scene <场景
 | CONFIG_MISSING | 凭据未配置 | 设置环境变量或创建配置文件 |
 | API_ERROR | API 调用失败 | 检查网络和凭据有效性 |
 | NETWORK_ERROR | 网络错误 | 检查网络连接 |
+| 400 | 请求参数错误 | 检查请求参数是否正确 |
+| 401 | 签名验证失败 | 检查 appId 和 appSecret 是否正确 |
+| 403 | 无权限访问 | 检查账号权限 |
+| 429 | 请求过于频繁 | 请稍后重试 |
+| 500 | 服务器内部错误 | 请稍后重试或联系技术支持 |
+
+### 网络错误类型
+
+| 错误类型 | 说明 | 解决方案 |
+|----------|------|----------|
+| DNS 解析失败 | 无法解析 API 域名 | 检查网络连接或 DNS 配置 |
+| 连接被拒绝 | 服务器无法连接 | 服务器无法连接，请稍后重试 |
+| 请求超时 | 服务器响应超时 | 服务器响应超时，请稍后重试 |
+
+## Debug 模式
+
+当需要排查问题时，可以启用 Debug 模式获取详细的调试信息：
+
+```bash
+# 启用 Debug 模式
+export POLYV_DEBUG=true
+node tools/clis/polyv.js create-channel --name "测试频道"
+```
+
+Debug 模式会输出：
+- 请求 URL 和端点
+- 请求参数（appSecret 会自动脱敏显示为 `ab****yz` 格式）
+- API 响应内容
+- 时间戳信息
+
+**安全说明：** Debug 模式下 appSecret 会被脱敏处理，不会在日志中显示完整密钥。
 
 ## 注意事项
 

@@ -1,0 +1,90 @@
+# Gate Decision - Story 2.3
+# Generated: 2026-03-03
+# Workflow: testarch-trace
+
+traceability_and_gate:
+  # Phase 1: Traceability
+  traceability:
+    story_id: "2.3"
+    story_title: "实现错误处理和 Debug 模式"
+    date: "2026-03-03"
+    coverage:
+      overall: 100
+      p0: 100
+      p1: 100
+      p2: 100
+      p3: null
+    gaps:
+      critical: 0
+      high: 0
+      medium: 0
+      low: 0
+    quality:
+      passing_tests: 26
+      total_tests: 26
+      blocker_issues: 0
+      warning_issues: 0
+    acceptance_criteria:
+      - id: "AC1"
+        description: "凭据缺失错误提示"
+        coverage: "FULL"
+        priority: "P0/P1"
+      - id: "AC2"
+        description: "API 错误处理"
+        coverage: "FULL"
+        priority: "P0/P1"
+      - id: "AC3"
+        description: "网络错误处理"
+        coverage: "FULL"
+        priority: "P0/P1"
+      - id: "AC4"
+        description: "Debug 模式"
+        coverage: "FULL"
+        priority: "P0/P1/P2"
+      - id: "AC5"
+        description: "API 限流处理"
+        coverage: "FULL"
+        priority: "P0/P1"
+      - id: "NFR1"
+        description: "敏感信息脱敏"
+        coverage: "FULL"
+        priority: "P0/P1"
+    recommendations: []
+
+  # Phase 2: Gate Decision
+  gate_decision:
+    decision: "PASS"
+    gate_type: "story"
+    decision_mode: "deterministic"
+    criteria:
+      p0_coverage: 100
+      p0_pass_rate: 100
+      p1_coverage: 100
+      p1_pass_rate: 100
+      overall_pass_rate: 100
+      overall_coverage: 100
+      security_issues: 0
+      critical_nfrs_fail: 0
+      flaky_tests: 0
+    thresholds:
+      min_p0_coverage: 100
+      min_p0_pass_rate: 100
+      min_p1_coverage: 90
+      min_p1_pass_rate: 95
+      min_overall_pass_rate: 95
+      min_coverage: 85
+    evidence:
+      test_results: "npm run test:unit"
+      test_command: "mocha 'tests/unit/*.test.js'"
+      traceability: "_bmad-output/test-artifacts/traceability/traceability-matrix-2.3.md"
+      story_file: "_bmad-output/implementation-artifacts/2-3-implement-error-handling-and-debug-mode.md"
+    next_steps:
+      - "Merge Story 2.3 to main branch"
+      - "Update project documentation with error codes"
+      - "Verify debug mode works in staging environment"
+    rationale: |
+      All P0 criteria met with 100% coverage and pass rates across all 26 unit tests.
+      All P1 criteria exceeded thresholds with 100% overall pass rate and 100% coverage.
+      No security issues detected - appSecret masking is properly implemented.
+      No flaky tests detected.
+      Story is ready for code review and merge.
