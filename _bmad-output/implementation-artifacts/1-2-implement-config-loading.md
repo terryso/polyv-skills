@@ -1,6 +1,6 @@
 # Story 1.2: 实现配置加载功能
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -40,33 +40,33 @@ So that 我可以灵活地配置工具而无需每次输入凭据。
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: 创建配置加载模块 (AC: 1, 2, 3, 4)
-  - [ ] 1.1 在 `tools/clis/polyv.js` 中创建 `loadConfig()` 函数
-  - [ ] 1.2 实现环境变量读取逻辑 (`process.env.POLYV_APP_ID`, `process.env.POLYV_APP_SECRET`)
-  - [ ] 1.3 实现配置文件读取逻辑 (`~/.polyv-skills/config.json`)
-  - [ ] 1.4 实现命令行参数解析逻辑
-  - [ ] 1.5 实现配置优先级合并逻辑
+- [x] Task 1: 创建配置加载模块 (AC: 1, 2, 3, 4)
+  - [x] 1.1 在 `tools/clis/polyv.js` 中创建 `loadConfig()` 函数
+  - [x] 1.2 实现环境变量读取逻辑 (`process.env.POLYV_APP_ID`, `process.env.POLYV_APP_SECRET`)
+  - [x] 1.3 实现配置文件读取逻辑 (`~/.polyv-skills/config.json`)
+  - [x] 1.4 实现命令行参数解析逻辑
+  - [x] 1.5 实现配置优先级合并逻辑
 
-- [ ] Task 2: 创建配置文件模板 (AC: 2)
-  - [ ] 2.1 创建 `config/config.example.json` 文件
-  - [ ] 2.2 包含 `appId` 和 `appSecret` 字段说明
+- [x] Task 2: 创建配置文件模板 (AC: 2)
+  - [x] 2.1 创建 `config/config.example.json` 文件
+  - [x] 2.2 包含 `appId` 和 `appSecret` 字段说明
 
-- [ ] Task 3: 实现错误处理 (AC: 5)
-  - [ ] 3.1 创建 `formatError()` 函数用于格式化错误消息
-  - [ ] 3.2 实现凭据缺失的错误提示（中文，包含配置指引）
-  - [ ] 3.3 实现配置文件读取失败的错误处理
+- [x] Task 3: 实现错误处理 (AC: 5)
+  - [x] 3.1 创建 `formatError()` 函数用于格式化错误消息
+  - [x] 3.2 实现凭据缺失的错误提示（中文，包含配置指引）
+  - [x] 3.3 实现配置文件读取失败的错误处理
 
-- [ ] Task 4: 添加 Debug 模式支持
-  - [ ] 4.1 创建 `debug()` 函数用于调试输出
-  - [ ] 4.2 通过 `POLYV_DEBUG` 环境变量控制
-  - [ ] 4.3 在 debug 模式下输出配置加载详情（脱敏 appSecret）
+- [x] Task 4: 添加 Debug 模式支持
+  - [x] 4.1 创建 `debug()` 函数用于调试输出
+  - [x] 4.2 通过 `POLYV_DEBUG` 环境变量控制
+  - [x] 4.3 在 debug 模式下输出配置加载详情（脱敏 appSecret）
 
-- [ ] Task 5: 测试配置加载功能
-  - [ ] 5.1 测试仅环境变量配置
-  - [ ] 5.2 测试仅配置文件配置
-  - [ ] 5.3 测试参数覆盖
-  - [ ] 5.4 测试凭据缺失错误提示
-  - [ ] 5.5 测试 debug 模式输出
+- [x] Task 5: 测试配置加载功能
+  - [x] 5.1 测试仅环境变量配置
+  - [x] 5.2 测试仅配置文件配置
+  - [x] 5.3 测试参数覆盖
+  - [x] 5.4 测试凭据缺失错误提示
+  - [x] 5.5 测试 debug 模式输出
 
 ## Dev Notes
 
