@@ -123,20 +123,20 @@ polyv-skills/
 **安装方式支持:**
 1. **Claude Code 插件市场**（推荐）
    ```bash
-   /plugin marketplace add your-org/polyv-skills
+   /plugin marketplace add terryso/polyv-skills
    /plugin install polyv-skills
    ```
 2. **npx skills**
    ```bash
-   npx skills add your-org/polyv-skills
+   npx skills add terryso/polyv-skills
    ```
 3. **Git Submodule**
    ```bash
-   git submodule add https://github.com/your-org/polyv-skills.git .agents/polyv-skills
+   git submodule add https://github.com/terryso/polyv-skills.git .agents/polyv-skills
    ```
 4. **Clone & Copy**
    ```bash
-   git clone https://github.com/your-org/polyv-skills.git
+   git clone https://github.com/terryso/polyv-skills.git
    cp -r polyv-skills/skills/* .agents/skills/
    ```
 
@@ -239,19 +239,19 @@ polyv-skills/
 
 | 方式 | 命令 | 说明 |
 |------|------|------|
-| **Claude Code 插件市场** | `/plugin marketplace add your-org/polyv-skills`<br>`/plugin install polyv-skills` | 最便捷，自动安装 |
-| **npx skills** | `npx skills add your-org/polyv-skills` | 跨 Agent 兼容 |
+| **Claude Code 插件市场** | `/plugin marketplace add terryso/polyv-skills`<br>`/plugin install polyv-skills` | 最便捷，自动安装 |
+| **npx skills** | `npx skills add terryso/polyv-skills` | 跨 Agent 兼容 |
 | **Git Submodule** | `git submodule add ... .agents/polyv-skills` | 易于更新 |
 | **Clone & Copy** | `cp -r skills/* .agents/skills/` | 手动控制 |
-| **SkillKit** | `npx skillkit install your-org/polyv-skills` | 多 Agent 支持 |
+| **SkillKit** | `npx skillkit install terryso/polyv-skills` | 多 Agent 支持 |
 
 **安装步骤（Claude Code 插件市场）:**
-1. 在 Claude Code 中执行：`/plugin marketplace add your-org/polyv-skills`
+1. 在 Claude Code 中执行：`/plugin marketplace add terryso/polyv-skills`
 2. 执行：`/plugin install polyv-skills`
 3. 配置凭据（环境变量或配置文件）
 
 **安装步骤（Clone & Copy）:**
-1. 克隆仓库：`git clone https://github.com/your-org/polyv-skills.git`
+1. 克隆仓库：`git clone https://github.com/terryso/polyv-skills.git`
 2. 复制 Skills：`cp -r polyv-skills/skills/* .agents/skills/`
 3. 配置凭据
 
@@ -443,7 +443,7 @@ polyv-skills/
       "name": "polyv-skills",
       "source": "./",
       "description": "polyv直播平台 API 工具包 - 创建频道、管理等",
-      "homepage": "https://github.com/your-org/polyv-skills",
+      "homepage": "https://github.com/terryso/polyv-skills",
       "license": "MIT",
       "keywords": ["polyv", "live-streaming", "api", "skills"]
     }
@@ -578,7 +578,7 @@ Agent 格式化展示给用户
 
 **Deployment:**
 - **Claude Code 插件市场**: `/plugin install polyv-skills`
-- **npx skills**: `npx skills add your-org/polyv-skills`
+- **npx skills**: `npx skills add terryso/polyv-skills`
 - **手动**: 复制 `skills/` 到 `.agents/skills/`
 
 ## Architecture Validation Results

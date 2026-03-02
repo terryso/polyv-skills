@@ -6,7 +6,23 @@
 
 | 工具名称 | 路径 | 描述 | 状态 |
 |---------|------|------|------|
-| (待添加) | `clis/` | CLI 工具将在后续 Epic 中添加 | 待开发 |
+| polyv | `clis/polyv.js` | 配置加载和测试工具 | 已完成 |
+
+### polyv CLI 用法
+
+```bash
+# 显示帮助
+node tools/clis/polyv.js help
+
+# 测试配置
+node tools/clis/polyv.js config-test
+
+# 使用参数加载配置
+node tools/clis/polyv.js --appId YOUR_ID --appSecret YOUR_SECRET
+
+# 启用调试模式
+POLYV_DEBUG=true node tools/clis/polyv.js config-test
+```
 
 ## 集成文档
 
@@ -36,4 +52,5 @@
 
 ## 更新日志
 
+- 2026-03-03: 添加 polyv CLI 配置工具
 - 2026-03-03: 初始版本，创建注册表结构
