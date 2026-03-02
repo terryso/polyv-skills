@@ -1,6 +1,6 @@
 # Story 2.3: 实现错误处理和 Debug 模式
 
-Status: review
+Status: done
 
 ## Story
 

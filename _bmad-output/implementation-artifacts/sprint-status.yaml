@@ -48,8 +48,8 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: 创建频道 Skill
-  epic-2: in-progress
+  epic-2: done
   2-1-implement-polyv-cli-core: done
   2-2-create-polyv-create-channel-skill: done
-  2-3-implement-error-handling-and-debug-mode: review
+  2-3-implement-error-handling-and-debug-mode: done
   epic-2-retrospective: optional
