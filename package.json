@@ -10,8 +10,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests/unit/*.test.js",
-    "test:unit": "mocha tests/unit/*.test.js",
+    "test": "mocha 'tests/**/*.test.js'",
+    "test:unit": "mocha 'tests/unit/*.test.js'",
+    "test:e2e": "mocha 'tests/e2e/*.test.js'",
     "config-test": "node tools/clis/polyv.js config-test"
   },
   "keywords": ["polyv", "live-streaming", "claude-code", "skills", "api"],
