@@ -34,7 +34,7 @@ POLYV_DEBUG=true node tools/clis/polyv.js config-test
 
 | Skill 名称 | 路径 | 描述 | 状态 |
 |-----------|------|------|------|
-| polyv-create-channel | `../skills/polyv-create-channel/` | 创建保利威直播频道 | 待开发 |
+| polyv-create-channel | `../skills/polyv-create-channel/` | 创建保利威直播频道 | 已完成 |
 
 ## 工具开发指南
 
