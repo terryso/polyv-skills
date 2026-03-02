@@ -1,23 +1,37 @@
 {
-  "name": "polyv-skills-story-1.2",
+  "name": "polyv-skills",
   "version": "1.0.0",
-  "description": "polyv直播平台 API Skills 集合，为 Claude Code 提供与保利威直播平台交互的能力。",
-  "main": "index.js",
+  "description": "PolyV 直播平台 API Skills 集合，为 Claude Code 提供与保利威直播平台交互的能力。",
+  "main": "tools/clis/polyv.js",
+  "bin": {
+    "polyv": "./tools/clis/polyv.js"
+  },
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "mocha tests/unit/*.test.js",
     "test:unit": "mocha tests/unit/*.test.js",
-    "test:e2e": "mocha tests/e2e/*.test.js"
+    "config-test": "node tools/clis/polyv.js config-test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["polyv", "live-streaming", "claude-code", "skills", "api"],
+  "author": "terryso",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terryso/polyv-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/terryso/polyv-skills/issues"
+  },
+  "homepage": "https://github.com/terryso/polyv-skills#readme",
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.3.3",
     "mocha": "^11.7.5",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
