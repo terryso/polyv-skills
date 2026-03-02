@@ -1,6 +1,6 @@
 # Story 2.2: 创建 polyv-create-channel Skill 定义
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
