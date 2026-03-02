@@ -108,7 +108,10 @@ polyv-skills/
 - 可选：ESLint 代码检查
 
 **Testing Framework:**
-- Node.js 内置 test runner（或 Vitest）
+- Mocha（已配置）
+- `npm test` 运行所有测试
+- `npm run test:unit` 运行单元测试
+- `npm run test:e2e` 运行 E2E 测试
 
 **Code Organization:**
 - `skills/` - Skill 定义（顶层目录）
@@ -562,7 +565,9 @@ Agent 格式化展示给用户
 - 每个脚本独立，包含所需的所有逻辑
 
 **Test Organization:**
-- `tests/*.test.js` - Node.js 内置测试
+- `tests/unit/*.test.js` - 单元测试（Mocha）
+- `tests/e2e/*.test.js` - E2E 测试（Mocha）
+- 所有测试使用 CommonJS 格式（`require`/`module.exports`）
 
 ### Development Workflow Integration
 
@@ -571,6 +576,7 @@ Agent 格式化展示给用户
 2. 编辑 `skills/*/SKILL.md`
 3. `node tools/clis/polyv.js` - 直接测试
 4. `POLYV_DEBUG=true node tools/clis/polyv.js` - Debug 模式
+5. `npm test` - 运行测试套件（Mocha）
 
 **Build Process:**
 - 无构建步骤
