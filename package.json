@@ -1,0 +1,23 @@
+{
+  "name": "polyv-skills-story-1.2",
+  "version": "1.0.0",
+  "description": "polyv直播平台 API Skills 集合，为 Claude Code 提供与保利威直播平台交互的能力。",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/*.test.js",
+    "test:unit": "mocha tests/unit/*.test.js",
+    "test:e2e": "mocha tests/e2e/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^25.3.3",
+    "mocha": "^11.7.5",
+    "typescript": "^5.9.3"
+  }
+}
