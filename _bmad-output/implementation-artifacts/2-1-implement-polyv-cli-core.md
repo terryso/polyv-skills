@@ -1,6 +1,6 @@
 # Story 2.1: 实现 polyv CLI 核心（签名和 API 调用）
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
