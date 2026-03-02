@@ -3,11 +3,14 @@
 /**
  * polyv-skills CLI Tool
  * Configuration loading module implementing Story 1.2
+ * Signature and API module implementing Story 2.1
  *
  * Supports:
  * - Environment variables (POLYV_APP_ID, POLYV_APP_SECRET)
  * - Config file (~/.polyv-skills/config.json)
  * - CLI parameter overrides (--appId, --appSecret)
+ * - MD5 signature generation for PolyV API v4
+ * - API calls to PolyV platform
  *
  * Priority: params > env > file
  */
@@ -15,6 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const crypto = require('crypto');
 
 // Constants
 const CONFIG_DIR_NAME = '.polyv-skills';
@@ -22,6 +26,11 @@ const CONFIG_FILE_NAME = 'config.json';
 const ENV_APP_ID = 'POLYV_APP_ID';
 const ENV_APP_SECRET = 'POLYV_APP_SECRET';
 const ENV_DEBUG = 'POLYV_DEBUG';
+
+// API Constants (Story 2.1)
+const API_BASE_URL = 'https://api.polyv.net';
+const DEFAULT_TIMEOUT = 5000; // 5 seconds
+const TIMESTAMP_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Get the path to the config file
@@ -234,6 +243,284 @@ function loadConfig(params = {}, options = {}) {
   return finalConfig;
 }
 
+// ============================================
+// Story 2.1: Signature Generation Functions
+// ============================================
+
+/**
+ * Generate millisecond timestamp
+ * @returns {number} Current timestamp in milliseconds
+ */
+function generateTimestamp() {
+  return Date.now();
+}
+
+/**
+ * Validate timestamp is within 5 minute window
+ * @param {number} timestamp - Timestamp to validate (milliseconds)
+ * @returns {boolean} True if timestamp is valid
+ */
+function validateTimestamp(timestamp) {
+  // Reject non-millisecond timestamps (10 digit second-based)
+  if (timestamp < 10000000000) {
+    return false;
+  }
+
+  const now = Date.now();
+  const diff = Math.abs(now - timestamp);
+  return diff <= TIMESTAMP_TOLERANCE_MS;
+}
+
+/**
+ * Mask appSecret for display
+ * @param {string} secret - The secret to mask
+ * @returns {string} Masked secret (e.g., "ab****yz")
+ */
+function maskAppSecret(secret) {
+  if (!secret || typeof secret !== 'string') {
+    return '****';
+  }
+  if (secret.length <= 4) {
+    return secret.charAt(0) + '*'.repeat(secret.length - 1);
+  }
+  return secret.substring(0, 2) + '****' + secret.substring(secret.length - 2);
+}
+
+/**
+ * Build signature string from params (sorted alphabetically)
+ * @param {object} params - Parameters to build signature string from
+ * @returns {string} Concatenated string in key1value1key2value2... format
+ */
+function buildSignatureString(params) {
+  const sortedKeys = Object.keys(params).sort();
+  let signStr = '';
+  for (const key of sortedKeys) {
+    signStr += key + params[key];
+  }
+  return signStr;
+}
+
+/**
+ * Generate MD5 signature for PolyV API v4
+ * @param {object} params - Request parameters (not including appSecret)
+ * @param {string} appSecret - Application secret
+ * @returns {string} MD5 signature (32-char lowercase hex)
+ */
+function generateSignature(params, appSecret) {
+  // 1. Build sorted parameter string
+  const signStr = buildSignatureString(params) + appSecret;
+  // 2. Calculate MD5
+  return crypto.createHash('md5').update(signStr).digest('hex');
+}
+
+// ============================================
+// Story 2.1: API Client Functions
+// ============================================
+
+/**
+ * Build request body for create-channel API
+ * @param {object} config - Config with appId and appSecret
+ * @param {object} channelParams - Channel parameters (name, scene, template)
+ * @returns {object} Request body object
+ */
+function buildRequestBody(config, channelParams) {
+  const timestamp = generateTimestamp();
+
+  // Build params for signature (business params only, not including sign)
+  const signParams = {
+    appId: config.appId,
+    timestamp: timestamp,
+    name: channelParams.name,
+    scene: channelParams.scene || 'topclass',
+    template: channelParams.template || 'ppt'
+  };
+
+  const sign = generateSignature(signParams, config.appSecret);
+
+  return {
+    appId: config.appId,
+    timestamp: timestamp,
+    sign: sign,
+    name: signParams.name,
+    scene: signParams.scene,
+    template: signParams.template
+  };
+}
+
+/**
+ * Build request configuration for fetch
+ * @param {object} config - Config with appId and appSecret
+ * @param {object} channelParams - Channel parameters
+ * @returns {object} Request config with headers and body
+ */
+function buildRequestConfig(config, channelParams) {
+  const body = buildRequestBody(config, channelParams);
+
+  return {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  };
+}
+
+/**
+ * Check if API response indicates success
+ * @param {object} response - API response object
+ * @returns {boolean} True if response is successful
+ */
+function isSuccessfulResponse(response) {
+  return response && response.code === 200;
+}
+
+/**
+ * Parse successful API response
+ * @param {object} response - API response object
+ * @returns {object} Parsed result with channelId and userId
+ */
+function parseApiResponse(response) {
+  if (!isSuccessfulResponse(response)) {
+    return null;
+  }
+
+  return {
+    channelId: response.data?.channelId,
+    userId: response.data?.userId,
+    name: response.data?.name
+  };
+}
+
+/**
+ * Error code mapping for Chinese messages
+ */
+const ERROR_CODE_MESSAGES = {
+  400: '请求参数错误',
+  401: '签名验证失败',
+  403: '无权限访问',
+  429: '请求过于频繁',
+  500: '服务器内部错误'
+};
+
+/**
+ * Error code hints
+ */
+const ERROR_CODE_HINTS = {
+  400: '检查请求参数是否正确',
+  401: '检查 appId 和 appSecret 是否正确',
+  403: '检查账号权限',
+  429: '请稍后重试',
+  500: '请稍后重试或联系技术支持'
+};
+
+/**
+ * Parse API error response
+ * @param {object} response - API error response object
+ * @returns {object} Parsed error with code, message, hint
+ */
+function parseApiError(response) {
+  const code = response?.code || 500;
+  const message = response?.message || response?.msg || ERROR_CODE_MESSAGES[code] || '未知错误';
+
+  return {
+    code: code,
+    message: message,
+    hint: ERROR_CODE_HINTS[code] || '请检查请求后重试',
+    isRateLimit: code === 429
+  };
+}
+
+/**
+ * Handle network errors
+ * @param {Error} error - Network error
+ * @returns {object} Formatted error object
+ */
+function handleNetworkError(error) {
+  let message = '网络请求失败';
+  let hint = '请检查网络连接后重试';
+
+  if (error.message?.includes('ENOTFOUND') || error.message?.includes('DNS')) {
+    message = 'DNS 解析失败';
+    hint = '请检查网络连接或 DNS 配置';
+  } else if (error.message?.includes('ECONNREFUSED')) {
+    message = '连接被拒绝';
+    hint = '服务器无法连接，请稍后重试';
+  } else if (error.message?.includes('ETIMEDOUT') || error.message?.includes('timeout')) {
+    message = '请求超时';
+    hint = '服务器响应超时，请稍后重试';
+  }
+
+  return {
+    code: 'NETWORK_ERROR',
+    message: message,
+    hint: hint
+  };
+}
+
+/**
+ * Create a channel via PolyV API
+ * @param {object} config - Config with appId and appSecret
+ * @param {object} channelParams - Channel parameters (name, scene, template)
+ * @param {object} options - Additional options (timeout)
+ * @returns {Promise<object>} Created channel info
+ */
+async function createChannel(config, channelParams, options = {}) {
+  const timeout = options.timeout || DEFAULT_TIMEOUT;
+  const endpoint = `${API_BASE_URL}/live/v4/channel/create`;
+  const requestConfig = buildRequestConfig(config, channelParams);
+
+  debug('Creating channel', {
+    endpoint: endpoint,
+    params: { ...channelParams, appId: config.appId },
+    timeout: timeout
+  });
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    const response = await fetch(endpoint, {
+      ...requestConfig,
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    const data = await response.json();
+
+    debug('API response', maskSensitiveData(data));
+
+    if (isSuccessfulResponse(data)) {
+      return parseApiResponse(data);
+    } else {
+      const error = parseApiError(data);
+      const err = new Error(error.message);
+      err.code = 'API_ERROR';
+      err.apiCode = error.code;
+      err.hint = error.hint;
+      throw err;
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      const timeoutError = new Error('请求超时');
+      timeoutError.code = 'API_ERROR';
+      timeoutError.apiCode = 'TIMEOUT';
+      throw timeoutError;
+    }
+
+    if (error.code === 'API_ERROR') {
+      throw error;
+    }
+
+    // Network error
+    const networkError = handleNetworkError(error);
+    const err = new Error(networkError.message);
+    err.code = networkError.code;
+    err.hint = networkError.hint;
+    throw err;
+  }
+}
+
 /**
  * Print help message
  */
@@ -245,12 +532,16 @@ Usage:
   polyv [command] [options]
 
 Commands:
-  config-test    Test configuration loading
-  help           Show this help message
+  config-test       Test configuration loading
+  create-channel    Create a new channel
+  help              Show this help message
 
 Options:
   --appId        PolyV application ID
   --appSecret    PolyV application secret
+  --name         Channel name (for create-channel)
+  --scene        Scene type: topclass (default), cloudclass, telecast, akt
+  --template     Template type: ppt (default), video
 
 Environment Variables:
   POLYV_APP_ID      PolyV application ID
@@ -292,8 +583,70 @@ function runConfigTest() {
   console.log('\n✅ Configuration test complete');
 }
 
+/**
+ * Parse channel parameters from CLI args
+ * @param {string[]} args - CLI arguments
+ * @returns {object} Channel parameters
+ */
+function parseChannelArgs(args) {
+  const params = {};
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === '--name' && args[i + 1]) {
+      params.name = args[++i];
+    } else if (arg === '--scene' && args[i + 1]) {
+      params.scene = args[++i];
+    } else if (arg === '--template' && args[i + 1]) {
+      params.template = args[++i];
+    } else if (arg.startsWith('--name=')) {
+      params.name = arg.split('=')[1];
+    } else if (arg.startsWith('--scene=')) {
+      params.scene = arg.split('=')[1];
+    } else if (arg.startsWith('--template=')) {
+      params.template = arg.split('=')[1];
+    }
+  }
+
+  return params;
+}
+
+/**
+ * Run create-channel command
+ * @param {object} config - Validated config
+ * @param {string[]} args - CLI args for channel params
+ */
+async function runCreateChannel(config, args) {
+  const channelParams = parseChannelArgs(args);
+
+  if (!channelParams.name) {
+    console.error(formatError('MISSING_NAME', '缺少频道名称', '请使用 --name 参数指定频道名称'));
+    process.exit(1);
+  }
+
+  try {
+    const result = await createChannel(config, channelParams);
+    console.log(JSON.stringify({
+      success: true,
+      channelId: result.channelId,
+      userId: result.userId
+    }, null, 2));
+  } catch (error) {
+    console.error(JSON.stringify({
+      success: false,
+      error: {
+        code: error.apiCode || error.code,
+        message: error.message,
+        hint: error.hint
+      }
+    }, null, 2));
+    process.exit(1);
+  }
+}
+
 // CLI entry point
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   const cliConfig = parseCliArgs(args);
 
@@ -310,6 +663,26 @@ function main() {
     process.exit(0);
   }
 
+  if (command === 'create-channel') {
+    const config = loadConfig(cliConfig);
+    const error = validateConfig(config);
+
+    if (error) {
+      console.error(JSON.stringify({
+        success: false,
+        error: {
+          code: error.code,
+          message: error.message,
+          hint: error.hint
+        }
+      }, null, 2));
+      process.exit(1);
+    }
+
+    await runCreateChannel(config, args);
+    return;
+  }
+
   // Default: load and display config
   const config = loadConfig(cliConfig);
   const error = validateConfig(config);
@@ -324,6 +697,7 @@ function main() {
 
 // Export functions for testing
 module.exports = {
+  // Config functions (Story 1.2)
   loadConfig,
   validateConfig,
   formatError,
@@ -332,7 +706,25 @@ module.exports = {
   getConfigPath,
   readConfigFile,
   readConfigEnv,
-  parseCliArgs
+  parseCliArgs,
+
+  // Signature functions (Story 2.1)
+  generateTimestamp,
+  validateTimestamp,
+  maskAppSecret,
+  buildSignatureString,
+  generateSignature,
+
+  // API functions (Story 2.1)
+  API_BASE_URL,
+  DEFAULT_TIMEOUT,
+  buildRequestBody,
+  buildRequestConfig,
+  isSuccessfulResponse,
+  parseApiResponse,
+  parseApiError,
+  handleNetworkError,
+  createChannel
 };
 
 // Run CLI if executed directly
