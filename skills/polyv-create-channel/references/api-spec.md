@@ -40,7 +40,7 @@ MD5: E3F501CFEF5FCCF2DF9BFDCE9C91F48C
 
 **JavaScript 实现：**
 ```javascript
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 function generateSignature(params, appSecret) {
   // 1. 按 key 字典序排序

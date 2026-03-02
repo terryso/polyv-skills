@@ -42,8 +42,8 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: 项目基础与配置
-  epic-1: backlog
-  1-1-create-project-structure-and-plugin-config: backlog
+  epic-1: in-progress
+  1-1-create-project-structure-and-plugin-config: done
   1-2-implement-config-loading: backlog
   epic-1-retrospective: optional
 

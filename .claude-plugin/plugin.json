@@ -1,0 +1,7 @@
+{
+  "name": "polyv-skills",
+  "version": "1.0.0",
+  "description": "polyv直播平台 API Skills 集合",
+  "skills": ["./skills/"],
+  "keywords": ["polyv", "live-streaming", "api"]
+}

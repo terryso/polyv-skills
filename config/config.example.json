@@ -1,0 +1,6 @@
+{
+  "appId": "YOUR_POLYV_APP_ID",
+  "appSecret": "YOUR_POLYV_APP_SECRET",
+  "apiBaseUrl": "https://api.polyv.net",
+  "debug": false
+}

@@ -1,0 +1,19 @@
+{
+  "name": "polyv-skills",
+  "owner": {
+    "name": "Nick"
+  },
+  "metadata": {
+    "description": "polyv直播平台 API Skills 集合"
+  },
+  "plugins": [
+    {
+      "name": "polyv-skills",
+      "source": "./",
+      "description": "polyv直播平台 API 工具包 - 创建频道、管理等",
+      "homepage": "https://github.com/your-org/polyv-skills",
+      "license": "MIT",
+      "keywords": ["polyv", "live-streaming", "api", "skills"]
+    }
+  ]
+}
