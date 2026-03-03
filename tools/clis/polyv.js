@@ -526,10 +526,12 @@ async function createChannel(config, channelParams, options = {}) {
  */
 function printHelp() {
   console.log(`
-polyv-skills CLI Tool
+polyv-skills CLI Tool v${CLI_VERSION}
 
 Usage:
   polyv [command] [options]
+  polyv --help
+  polyv --version
 
 Commands:
   config-test       Test configuration loading
@@ -537,6 +539,8 @@ Commands:
   help              Show this help message
 
 Options:
+  --help, -h     Show this help message
+  --version, -v  Show version number
   --appId        PolyV application ID
   --appSecret    PolyV application secret
   --name         Channel name (for create-channel)
@@ -645,15 +649,29 @@ async function runCreateChannel(config, args) {
   }
 }
 
+// CLI version
+const CLI_VERSION = '1.0.0';
+
 // CLI entry point
 async function main() {
   const args = process.argv.slice(2);
   const cliConfig = parseCliArgs(args);
 
+  // Handle --help and --version flags first (even without command)
+  if (args.includes('--help') || args.includes('-h') || args.length === 0) {
+    printHelp();
+    process.exit(0);
+  }
+
+  if (args.includes('--version') || args.includes('-v')) {
+    console.log(CLI_VERSION);
+    process.exit(0);
+  }
+
   // Handle commands
   const command = args.find(arg => !arg.startsWith('--'));
 
-  if (command === 'help' || command === '--help' || command === '-h') {
+  if (command === 'help') {
     printHelp();
     process.exit(0);
   }

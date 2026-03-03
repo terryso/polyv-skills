@@ -16,19 +16,17 @@ test.describe('PolyV CLI Core E2E Tests (ATDD)', () => {
 
   test.describe('CLI Entry Point', () => {
 
-    test.skip('[P0] should have valid CLI entry point', async () => {
-      // Skipped: --help flag not implemented yet
+    test('[P0] should have valid CLI entry point', async () => {
       const result = execSync(`node ${CLI_PATH} --help`, {
         encoding: 'utf-8',
         timeout: 5000
       });
 
       expect(result).toContain('polyv');
-      expect(result).toContain('usage');
+      expect(result.toLowerCase()).toContain('usage');
     });
 
-    test.skip('[P1] should show version with --version flag', async () => {
-      // Skipped: --version flag not implemented yet
+    test('[P1] should show version with --version flag', async () => {
       const result = execSync(`node ${CLI_PATH} --version`, {
         encoding: 'utf-8',
         timeout: 5000
