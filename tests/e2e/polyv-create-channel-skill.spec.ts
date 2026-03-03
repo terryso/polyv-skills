@@ -194,7 +194,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content.toLowerCase()).toMatch(/##?\s*cli|##?\s*调用/);
 
       // Should show the command
-      expect(content).toContain('node tools/clis/polyv.js create-channel');
+      expect(content).toContain('node scripts/polyv.js create-channel');
     });
 
   });

@@ -144,7 +144,7 @@ describe('Skill Definition - Story 2.2', () => {
       // THIS TEST WILL FAIL - CLI command not documented yet
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
 
-      assert.ok(content.includes('node tools/clis/polyv.js'), 'Should show node command');
+      assert.ok(content.includes('node scripts/polyv.js'), 'Should show node command');
       assert.ok(content.includes('create-channel'), 'Should show create-channel command');
     });
 
