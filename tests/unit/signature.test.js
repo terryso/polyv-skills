@@ -23,7 +23,7 @@ const {
   validateTimestamp,
   buildSignatureString,
   maskAppSecret
-} = require('../../tools/clis/polyv');
+} = require('../../skills/polyv-create-channel/scripts/polyv');
 
 describe('Signature Generation - Story 2.1', () => {
 

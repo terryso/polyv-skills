@@ -26,7 +26,7 @@ const {
   validateConfig,
   formatError,
   maskSensitiveData
-} = require('../../tools/clis/polyv');
+} = require('../../skills/polyv-create-channel/scripts/polyv');
 
 // Store original env values
 const originalEnv = {};

@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
 import { execSync, spawn } from 'child_process';
 import * as path from 'path';
 
-const CLI_PATH = path.join(process.cwd(), 'tools', 'clis', 'polyv.js');
+const CLI_PATH = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'scripts', 'polyv.js');
 
 test.describe('PolyV CLI Core E2E Tests (ATDD)', () => {
 

@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
 import { execSync } from 'child_process';
 import * as path from 'path';
 
-const CLI_PATH = path.join(process.cwd(), 'tools', 'clis', 'polyv.js');
+const CLI_PATH = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'scripts', 'polyv.js');
 
 test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () => {
 

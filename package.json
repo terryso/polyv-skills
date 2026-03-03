@@ -2,9 +2,9 @@
   "name": "polyv-skills",
   "version": "1.0.0",
   "description": "PolyV 直播平台 API Skills 集合，为 Claude Code 提供与保利威直播平台交互的能力。",
-  "main": "tools/clis/polyv.js",
+  "main": "skills/polyv-create-channel/scripts/polyv.js",
   "bin": {
-    "polyv": "./tools/clis/polyv.js"
+    "polyv": "./skills/polyv-create-channel/scripts/polyv.js"
   },
   "directories": {
     "test": "tests"
@@ -15,7 +15,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "config-test": "node tools/clis/polyv.js config-test"
+    "config-test": "node skills/polyv-create-channel/scripts/polyv.js config-test"
   },
   "keywords": [
     "polyv",

@@ -26,7 +26,7 @@ const {
   parseApiError,
   ERROR_CODE_MESSAGES,
   ERROR_CODE_HINTS
-} = require('../../tools/clis/polyv');
+} = require('../../skills/polyv-create-channel/scripts/polyv');
 
 describe('Error Handling - Story 2.3', () => {
 

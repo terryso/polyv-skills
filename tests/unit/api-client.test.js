@@ -26,7 +26,7 @@ const {
   handleNetworkError,
   API_BASE_URL,
   DEFAULT_TIMEOUT
-} = require('../../tools/clis/polyv');
+} = require('../../skills/polyv-create-channel/scripts/polyv');
 
 describe('API Client - Story 2.1', () => {
 
@@ -208,7 +208,7 @@ describe('API Client - Story 2.1', () => {
 
       const body = buildRequestBody(config, channelParams);
 
-      assert.strictEqual(body.scene, 'topclass');
+      assert.strictEqual(body.newScene, 'topclass');
     });
 
     it('[P1] should include template type in request body', () => {
@@ -242,7 +242,7 @@ describe('API Client - Story 2.1', () => {
       const body = buildRequestBody(config, channelParams);
 
       // Should use defaults
-      assert.strictEqual(body.scene, 'topclass');
+      assert.strictEqual(body.newScene, 'topclass');
       assert.strictEqual(body.template, 'ppt');
     });
 

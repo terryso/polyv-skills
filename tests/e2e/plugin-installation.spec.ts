@@ -128,7 +128,7 @@ test.describe('Plugin Installation E2E Tests', () => {
   test.describe('CLI Tool', () => {
 
     test('should have polyv CLI tool', async () => {
-      const cliPath = path.join(projectRoot, 'tools', 'clis', 'polyv.js');
+      const cliPath = path.join(projectRoot, 'skills', 'polyv-create-channel', 'scripts', 'polyv.js');
 
       expect(fs.existsSync(cliPath)).toBe(true);
 
@@ -138,7 +138,7 @@ test.describe('Plugin Installation E2E Tests', () => {
     });
 
     test('should export required functions', async () => {
-      const polyv = require(path.join(projectRoot, 'tools', 'clis', 'polyv.js'));
+      const polyv = require(path.join(projectRoot, 'skills', 'polyv-create-channel', 'scripts', 'polyv.js'));
 
       expect(typeof polyv.loadConfig).toBe('function');
       expect(typeof polyv.validateConfig).toBe('function');
