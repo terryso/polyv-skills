@@ -302,15 +302,18 @@ function buildSignatureString(params) {
 
 /**
  * Generate MD5 signature for PolyV API v4
+ * Format: appSecret + paramString + appSecret, then MD5 and uppercase
  * @param {object} params - Request parameters (not including appSecret)
  * @param {string} appSecret - Application secret
- * @returns {string} MD5 signature (32-char lowercase hex)
+ * @returns {string} MD5 signature (32-char uppercase hex)
  */
 function generateSignature(params, appSecret) {
   // 1. Build sorted parameter string
-  const signStr = buildSignatureString(params) + appSecret;
-  // 2. Calculate MD5
-  return crypto.createHash('md5').update(signStr).digest('hex');
+  const paramString = buildSignatureString(params);
+  // 2. Create signature source with appSecret sandwich
+  const signStr = appSecret + paramString + appSecret;
+  // 3. Calculate MD5 and convert to uppercase
+  return crypto.createHash('md5').update(signStr, 'utf8').digest('hex').toUpperCase();
 }
 
 // ============================================
@@ -318,74 +321,49 @@ function generateSignature(params, appSecret) {
 // ============================================
 
 /**
- * Build request body for create-channel API
+ * Build request for create-channel API
+ * Auth params go in URL query string, channel params go in request body
  * @param {object} config - Config with appId and appSecret
  * @param {object} channelParams - Channel parameters
- * @returns {object} Request body object
+ * @returns {object} Object with queryParams and requestBody
  */
-function buildRequestBody(config, channelParams) {
+function buildRequest(config, channelParams) {
   const timestamp = generateTimestamp();
 
-  // Build params for signature (business params only, not including sign)
+  // Build params for signature (auth params + channel params)
   const signParams = {
     appId: config.appId,
-    timestamp: timestamp,
+    timestamp: timestamp
+  };
+
+  // Generate signature from auth params only
+  const sign = generateSignature(signParams, config.appSecret);
+
+  // Query params (auth params in URL)
+  const queryParams = new URLSearchParams({
+    appId: config.appId,
+    timestamp: timestamp.toString(),
+    sign: sign
+  });
+
+  // Request body (channel params only)
+  const requestBody = {
     name: channelParams.name,
     newScene: channelParams.newScene || channelParams.scene || 'topclass',
     template: channelParams.template || 'ppt'
   };
 
-  // Add optional parameters if provided
-  if (channelParams.channelPasswd) signParams.channelPasswd = channelParams.channelPasswd;
-  if (channelParams.pureRtcEnabled) signParams.pureRtcEnabled = channelParams.pureRtcEnabled;
-  if (channelParams.type) signParams.type = channelParams.type;
-  if (channelParams.linkMicLimit) signParams.linkMicLimit = channelParams.linkMicLimit;
-  if (channelParams.categoryId) signParams.categoryId = channelParams.categoryId;
-  if (channelParams.startTime) signParams.startTime = channelParams.startTime;
-  if (channelParams.endTime) signParams.endTime = channelParams.endTime;
-  if (channelParams.labelData) signParams.labelData = channelParams.labelData;
-
-  const sign = generateSignature(signParams, config.appSecret);
-
-  // Build request body (API uses newScene, but we accept both scene and newScene)
-  const requestBody = {
-    appId: config.appId,
-    timestamp: timestamp,
-    sign: sign,
-    name: signParams.name,
-    newScene: signParams.newScene,
-    template: signParams.template
-  };
-
   // Add optional parameters to request body
-  if (signParams.channelPasswd) requestBody.channelPasswd = signParams.channelPasswd;
-  if (signParams.pureRtcEnabled) requestBody.pureRtcEnabled = signParams.pureRtcEnabled;
-  if (signParams.type) requestBody.type = signParams.type;
-  if (signParams.linkMicLimit) requestBody.linkMicLimit = signParams.linkMicLimit;
-  if (signParams.categoryId) requestBody.categoryId = signParams.categoryId;
-  if (signParams.startTime) requestBody.startTime = signParams.startTime;
-  if (signParams.endTime) requestBody.endTime = signParams.endTime;
-  if (signParams.labelData) requestBody.labelData = signParams.labelData;
+  if (channelParams.channelPasswd) requestBody.channelPasswd = channelParams.channelPasswd;
+  if (channelParams.pureRtcEnabled) requestBody.pureRtcEnabled = channelParams.pureRtcEnabled;
+  if (channelParams.type) requestBody.type = channelParams.type;
+  if (channelParams.linkMicLimit) requestBody.linkMicLimit = channelParams.linkMicLimit;
+  if (channelParams.categoryId) requestBody.categoryId = channelParams.categoryId;
+  if (channelParams.startTime) requestBody.startTime = channelParams.startTime;
+  if (channelParams.endTime) requestBody.endTime = channelParams.endTime;
+  if (channelParams.labelData) requestBody.labelData = channelParams.labelData;
 
-  return requestBody;
-}
-
-/**
- * Build request configuration for fetch
- * @param {object} config - Config with appId and appSecret
- * @param {object} channelParams - Channel parameters
- * @returns {object} Request config with headers and body
- */
-function buildRequestConfig(config, channelParams) {
-  const body = buildRequestBody(config, channelParams);
-
-  return {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  };
+  return { queryParams, requestBody };
 }
 
 /**
@@ -489,12 +467,13 @@ function handleNetworkError(error) {
  */
 async function createChannel(config, channelParams, options = {}) {
   const timeout = options.timeout || DEFAULT_TIMEOUT;
-  const endpoint = `${API_BASE_URL}/live/v4/channel/create`;
-  const requestConfig = buildRequestConfig(config, channelParams);
+  const { queryParams, requestBody } = buildRequest(config, channelParams);
+  const endpoint = `${API_BASE_URL}/live/v4/channel/create?${queryParams.toString()}`;
 
   debug('Creating channel', {
     endpoint: endpoint,
-    params: { ...channelParams, appId: config.appId },
+    queryParams: Object.fromEntries(queryParams),
+    requestBody: requestBody,
     timeout: timeout
   });
 
@@ -503,7 +482,11 @@ async function createChannel(config, channelParams, options = {}) {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     const response = await fetch(endpoint, {
-      ...requestConfig,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody),
       signal: controller.signal
     });
 
@@ -828,8 +811,7 @@ module.exports = {
   // API functions (Story 2.1)
   API_BASE_URL,
   DEFAULT_TIMEOUT,
-  buildRequestBody,
-  buildRequestConfig,
+  buildRequest,
   isSuccessfulResponse,
   parseApiResponse,
   parseApiError,
