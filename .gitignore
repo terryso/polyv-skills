@@ -45,3 +45,9 @@ playwright/.cache/
 # Temporary files
 tmp/
 temp/
+
+# BMAD
+_bmad
+_bmad-output
+.claude
+
