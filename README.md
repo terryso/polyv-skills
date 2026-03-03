@@ -65,11 +65,8 @@ polyv-skills/
 ├── skills/                  # Skills 目录
 │   └── polyv-create-channel/  # 创建频道 Skill
 │       ├── SKILL.md         # Skill 定义
+│       ├── scripts/         # CLI 工具脚本
 │       └── references/      # 参考文档
-├── tools/                   # 工具目录
-│   ├── clis/                # CLI 工具脚本
-│   ├── integrations/        # 集成参考文档
-│   └── REGISTRY.md          # 工具注册表
 ├── config/                  # 配置模板
 │   └── config.example.json  # 配置示例
 ├── README.md                # 本文件
