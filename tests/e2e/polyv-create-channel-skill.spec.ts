@@ -21,7 +21,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('AC1: Skill 自动调用', () => {
 
-    test.skip('[P0] should have valid SKILL.md file structure', async () => {
+    test('[P0] should have valid SKILL.md file structure', async () => {
       // THIS TEST WILL FAIL - SKILL.md file does not exist yet
 
       // Verify the SKILL.md file exists
@@ -39,7 +39,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toContain('description:');
     });
 
-    test.skip('[P0] should have correct skill name in frontmatter', async () => {
+    test('[P0] should have correct skill name in frontmatter', async () => {
       // THIS TEST WILL FAIL - SKILL.md frontmatter not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -54,7 +54,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(frontmatter).toContain('name: polyv-create-channel');
     });
 
-    test.skip('[P0] should have descriptive description in frontmatter', async () => {
+    test('[P0] should have descriptive description in frontmatter', async () => {
       // THIS TEST WILL FAIL - description not written yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -75,7 +75,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('AC2: 参数解析', () => {
 
-    test.skip('[P1] should document name parameter as required', async () => {
+    test('[P1] should document name parameter as required', async () => {
       // THIS TEST WILL FAIL - parameter documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -88,7 +88,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/必填|required/);
     });
 
-    test.skip('[P1] should document scene parameter with defaults', async () => {
+    test('[P1] should document scene parameter with defaults', async () => {
       // THIS TEST WILL FAIL - scene parameter documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -103,7 +103,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/默认|default.*topclass/);
     });
 
-    test.skip('[P1] should document template parameter with defaults', async () => {
+    test('[P1] should document template parameter with defaults', async () => {
       // THIS TEST WILL FAIL - template parameter documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -118,7 +118,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/默认|default.*ppt/);
     });
 
-    test.skip('[P1] should have parameter table with all fields', async () => {
+    test('[P1] should have parameter table with all fields', async () => {
       // THIS TEST WILL FAIL - parameter table not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -136,7 +136,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('AC3: 缺失参数询问', () => {
 
-    test.skip('[P1] should include usage examples showing parameter extraction', async () => {
+    test('[P1] should include usage examples showing parameter extraction', async () => {
       // THIS TEST WILL FAIL - usage examples not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -148,7 +148,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/示例\s*1|Example\s*1|用户：/);
     });
 
-    test.skip('[P2] should show example with only name parameter', async () => {
+    test('[P2] should show example with only name parameter', async () => {
       // THIS TEST WILL FAIL - simplified example not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -161,7 +161,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('AC4: 成功结果展示', () => {
 
-    test.skip('[P1] should document expected output format', async () => {
+    test('[P1] should document expected output format', async () => {
       // THIS TEST WILL FAIL - output format documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -173,7 +173,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/channelId|频道\s*ID/);
     });
 
-    test.skip('[P1] should document error handling', async () => {
+    test('[P1] should document error handling', async () => {
       // THIS TEST WILL FAIL - error handling documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -185,7 +185,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content).toMatch(/CONFIG_MISSING|API_ERROR/);
     });
 
-    test.skip('[P2] should document CLI invocation command', async () => {
+    test('[P2] should document CLI invocation command', async () => {
       // THIS TEST WILL FAIL - CLI documentation not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -201,14 +201,14 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('File Structure', () => {
 
-    test.skip('[P2] should have references directory', async () => {
+    test('[P2] should have references directory', async () => {
       // THIS TEST WILL FAIL - references directory verification
 
       const referencesDir = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'references');
       expect(fs.existsSync(referencesDir)).toBe(true);
     });
 
-    test.skip('[P2] should have api-spec.md in references', async () => {
+    test('[P2] should have api-spec.md in references', async () => {
       // THIS TEST WILL FAIL - api-spec.md should exist from previous story
 
       expect(fs.existsSync(API_SPEC_PATH)).toBe(true);
@@ -218,7 +218,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
   test.describe('SKILL.md Content Quality', () => {
 
-    test.skip('[P2] should have clear description of functionality', async () => {
+    test('[P2] should have clear description of functionality', async () => {
       // THIS TEST WILL FAIL - functionality description not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');
@@ -227,7 +227,7 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(content.toLowerCase()).toMatch(/##?\s*功能|##?\s*说明|##?\s*overview/);
     });
 
-    test.skip('[P2] should include notes or cautions section', async () => {
+    test('[P2] should include notes or cautions section', async () => {
       // THIS TEST WILL FAIL - notes section not created yet
 
       const content = fs.readFileSync(SKILL_FILE_PATH, 'utf-8');

@@ -16,7 +16,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('AC1: 凭据缺失错误提示', () => {
 
-    test.skip('[P0] should show CONFIG_MISSING error for missing appId', async () => {
+    test('[P0] should show CONFIG_MISSING error for missing appId', async () => {
       // THIS TEST WILL FAIL until error format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试频道"`, {
@@ -38,7 +38,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P0] should show CONFIG_MISSING error for missing appSecret', async () => {
+    test('[P0] should show CONFIG_MISSING error for missing appSecret', async () => {
       // THIS TEST WILL FAIL until error format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试频道"`, {
@@ -60,7 +60,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should show config file hint in error message', async () => {
+    test('[P1] should show config file hint in error message', async () => {
       // THIS TEST WILL FAIL until error hint verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试频道"`, {
@@ -81,7 +81,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should show environment variable hint', async () => {
+    test('[P1] should show environment variable hint', async () => {
       // THIS TEST WILL FAIL until error hint verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试频道"`, {
@@ -96,7 +96,9 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       } catch (error: any) {
         const output = error.message || error.stdout || error.stderr;
         // Should mention environment variable setup
-        expect(output).toContain('POLYV_APP_ID') || expect(output).toContain('环境变量');
+        // Should mention environment variable setup
+        const hasEnvHint = output.includes('POLYV_APP_ID') || output.includes('环境变量');
+        expect(hasEnvHint).toBeTruthy();
       }
     });
 
@@ -104,7 +106,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('AC2: API 错误处理', () => {
 
-    test.skip('[P0] should return Chinese error for API 400', async () => {
+    test('[P0] should return Chinese error for API 400', async () => {
       // THIS TEST WILL FAIL - requires mocking API response
       // This test would need API mocking to verify Chinese error messages
       try {
@@ -125,7 +127,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should include hint for API errors', async () => {
+    test('[P1] should include hint for API errors', async () => {
       // THIS TEST WILL FAIL - requires mocking API response
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
@@ -149,7 +151,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('AC3: 网络错误处理', () => {
 
-    test.skip('[P0] should handle network timeout gracefully', async () => {
+    test('[P0] should handle network timeout gracefully', async () => {
       // THIS TEST WILL FAIL until timeout handling verified
       try {
         // Use very short timeout to trigger timeout error
@@ -171,7 +173,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should not crash on network errors', async () => {
+    test('[P1] should not crash on network errors', async () => {
       // THIS TEST WILL FAIL until error handling verified
       // Test that any network error results in clean exit, not crash
       let errorThrown = false;
@@ -197,7 +199,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('AC4: Debug 模式', () => {
 
-    test.skip('[P0] should show debug info when POLYV_DEBUG=true', async () => {
+    test('[P0] should show debug info when POLYV_DEBUG=true', async () => {
       // THIS TEST WILL FAIL until debug mode verified
       try {
         const result = execSync(`node ${CLI_PATH} config-test`, {
@@ -219,7 +221,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P0] should mask appSecret in debug output', async () => {
+    test('[P0] should mask appSecret in debug output', async () => {
       // THIS TEST WILL FAIL until debug masking verified
       try {
         const result = execSync(`node ${CLI_PATH} config-test`, {
@@ -241,7 +243,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should show request URL in debug mode', async () => {
+    test('[P1] should show request URL in debug mode', async () => {
       // THIS TEST WILL FAIL until debug mode enhanced
       try {
         const result = execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
@@ -257,12 +259,12 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       } catch (error: any) {
         const output = error.stdout || error.stderr || error.message;
         // Should show API URL
-        expect(output).toContain('api.polyv.net') || expect(output).toContain('endpoint');
+        const hasUrl = output.includes('api.polyv.net') || output.includes('endpoint');
+        expect(hasUrl).toBeTruthy();
       }
     });
 
-    test.skip('[P1] should show request params in debug mode', async () => {
-      // THIS TEST WILL FAIL until debug mode enhanced
+    test('[P1] should show request params in debug mode', async () => {
       try {
         const result = execSync(`node ${CLI_PATH} create-channel --name "测试频道"`, {
           encoding: 'utf-8',
@@ -276,13 +278,13 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
         });
       } catch (error: any) {
         const output = error.stdout || error.stderr || error.message;
-        // Should show request parameters
-        expect(output).toContain('params') || expect(output).toContain('name');
+        // Should show request parameters - check for either params or name
+        const hasParams = output.toLowerCase().includes('params') || output.includes('name');
+        expect(hasParams).toBeTruthy();
       }
     });
 
-    test.skip('[P1] should show response in debug mode', async () => {
-      // THIS TEST WILL FAIL until debug mode enhanced
+    test('[P1] should show response in debug mode', async () => {
       try {
         const result = execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
           encoding: 'utf-8',
@@ -296,12 +298,13 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
         });
       } catch (error: any) {
         const output = error.stdout || error.stderr || error.message;
-        // Should show response (or response status)
-        expect(output).toContain('response') || expect(output).toContain('Response');
+        // Should show response (or response status) - case insensitive
+        const hasResponse = output.toLowerCase().includes('response');
+        expect(hasResponse).toBeTruthy();
       }
     });
 
-    test.skip('[P2] should not show debug when POLYV_DEBUG not set', async () => {
+    test('[P2] should not show debug when POLYV_DEBUG not set', async () => {
       // THIS TEST WILL FAIL until debug mode verified
       const result = execSync(`node ${CLI_PATH} config-test`, {
         encoding: 'utf-8',
@@ -321,7 +324,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('AC5: API 限流处理', () => {
 
-    test.skip('[P0] should return friendly message for 429', async () => {
+    test('[P0] should return friendly message for 429', async () => {
       // THIS TEST WILL FAIL - requires mocking 429 response
       // This test would need API mocking to verify 429 handling
       // Informational test - actual behavior depends on API
@@ -343,7 +346,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should include wait hint for rate limit', async () => {
+    test('[P1] should include wait hint for rate limit', async () => {
       // THIS TEST WILL FAIL - requires mocking 429 response
       // This test would need API mocking to verify rate limit hints
       expect(true).toBe(true); // Placeholder - needs API mock setup
@@ -353,7 +356,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('Error Output Format', () => {
 
-    test.skip('[P0] should format errors with JSON structure', async () => {
+    test('[P0] should format errors with JSON structure', async () => {
       // THIS TEST WILL FAIL until JSON output format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
@@ -380,7 +383,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should include error code in JSON output', async () => {
+    test('[P1] should include error code in JSON output', async () => {
       // THIS TEST WILL FAIL until JSON output format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
@@ -404,7 +407,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       }
     });
 
-    test.skip('[P1] should include hint in JSON output', async () => {
+    test('[P1] should include hint in JSON output', async () => {
       // THIS TEST WILL FAIL until JSON output format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
@@ -423,7 +426,8 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
           expect(parsed.error).toHaveProperty('hint');
         } catch {
           // Text format also acceptable
-          expect(output).toContain('提示') || expect(output).toContain('hint');
+          const hasHint = output.includes('提示') || output.includes('hint');
+          expect(hasHint).toBeTruthy();
         }
       }
     });
@@ -432,7 +436,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
 
   test.describe('NFR10: 网络错误时返回清晰错误信息', () => {
 
-    test.skip('[P0] should not crash on network error', async () => {
+    test('[P0] should not crash on network error', async () => {
       // THIS TEST WILL FAIL until error handling verified
       let crashed = false;
       try {
@@ -456,7 +460,7 @@ test.describe('Error Handling and Debug Mode E2E Tests (ATDD) - Story 2.3', () =
       expect(crashed).toBe(true);
     });
 
-    test.skip('[P1] should return clear error message on network error', async () => {
+    test('[P1] should return clear error message on network error', async () => {
       // THIS TEST WILL FAIL until error message format verified
       try {
         execSync(`node ${CLI_PATH} create-channel --name "测试"`, {
