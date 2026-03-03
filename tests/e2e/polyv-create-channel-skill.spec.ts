@@ -15,7 +15,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const SKILL_FILE_PATH = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'SKILL.md');
-const API_SPEC_PATH = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'references', 'api-spec.md');
+const ADVANCED_PARAMS_PATH = path.join(process.cwd(), 'skills', 'polyv-create-channel', 'references', 'advanced-parameters.md');
 
 test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
 
@@ -208,10 +208,10 @@ test.describe('polyv-create-channel Skill Definition E2E Tests (ATDD)', () => {
       expect(fs.existsSync(referencesDir)).toBe(true);
     });
 
-    test('[P2] should have api-spec.md in references', async () => {
-      // THIS TEST WILL FAIL - api-spec.md should exist from previous story
+    test('[P2] should have advanced-parameters.md in references', async () => {
+      // Advanced parameters guide should exist
 
-      expect(fs.existsSync(API_SPEC_PATH)).toBe(true);
+      expect(fs.existsSync(ADVANCED_PARAMS_PATH)).toBe(true);
     });
 
   });

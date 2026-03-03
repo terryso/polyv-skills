@@ -320,7 +320,7 @@ function generateSignature(params, appSecret) {
 /**
  * Build request body for create-channel API
  * @param {object} config - Config with appId and appSecret
- * @param {object} channelParams - Channel parameters (name, scene, template)
+ * @param {object} channelParams - Channel parameters
  * @returns {object} Request body object
  */
 function buildRequestBody(config, channelParams) {
@@ -331,20 +331,43 @@ function buildRequestBody(config, channelParams) {
     appId: config.appId,
     timestamp: timestamp,
     name: channelParams.name,
-    scene: channelParams.scene || 'topclass',
+    newScene: channelParams.newScene || channelParams.scene || 'topclass',
     template: channelParams.template || 'ppt'
   };
 
+  // Add optional parameters if provided
+  if (channelParams.channelPasswd) signParams.channelPasswd = channelParams.channelPasswd;
+  if (channelParams.pureRtcEnabled) signParams.pureRtcEnabled = channelParams.pureRtcEnabled;
+  if (channelParams.type) signParams.type = channelParams.type;
+  if (channelParams.linkMicLimit) signParams.linkMicLimit = channelParams.linkMicLimit;
+  if (channelParams.categoryId) signParams.categoryId = channelParams.categoryId;
+  if (channelParams.startTime) signParams.startTime = channelParams.startTime;
+  if (channelParams.endTime) signParams.endTime = channelParams.endTime;
+  if (channelParams.labelData) signParams.labelData = channelParams.labelData;
+
   const sign = generateSignature(signParams, config.appSecret);
 
-  return {
+  // Build request body (API uses newScene, but we accept both scene and newScene)
+  const requestBody = {
     appId: config.appId,
     timestamp: timestamp,
     sign: sign,
     name: signParams.name,
-    scene: signParams.scene,
+    newScene: signParams.newScene,
     template: signParams.template
   };
+
+  // Add optional parameters to request body
+  if (signParams.channelPasswd) requestBody.channelPasswd = signParams.channelPasswd;
+  if (signParams.pureRtcEnabled) requestBody.pureRtcEnabled = signParams.pureRtcEnabled;
+  if (signParams.type) requestBody.type = signParams.type;
+  if (signParams.linkMicLimit) requestBody.linkMicLimit = signParams.linkMicLimit;
+  if (signParams.categoryId) requestBody.categoryId = signParams.categoryId;
+  if (signParams.startTime) requestBody.startTime = signParams.startTime;
+  if (signParams.endTime) requestBody.endTime = signParams.endTime;
+  if (signParams.labelData) requestBody.labelData = signParams.labelData;
+
+  return requestBody;
 }
 
 /**
@@ -543,12 +566,33 @@ Options:
   --version, -v  Show version number
   --appId        PolyV application ID
   --appSecret    PolyV application secret
-  --name         Channel name (for create-channel)
-  --scene        Scene type: topclass (default), cloudclass, telecast, akt
-  --template     Template type: ppt (default), video
+
+create-channel Options:
+  --name              Channel name (required)
+  --scene             Scene type: topclass (default), double, train, alone, seminar, guide
+  --template          Template type: ppt (default), portrait_ppt, alone, portrait_alone, topclass, portrait_topclass, seminar
+
+  Advanced Options:
+  --channelPasswd     Teacher login password (6-16 chars, auto-generated if not provided)
+  --pureRtcEnabled    Latency mode: Y (no delay) or N (normal delay)
+  --type              Broadcast type: normal, transmit, receive
+  --linkMicLimit      Max co-hosts (1-16)
+  --categoryId        Category ID
+  --startTime         Start timestamp (display only)
+  --endTime           End timestamp (display only)
+  --labelData         Label IDs (comma-separated)
 
 Environment Variables:
   POLYV_APP_ID      PolyV application ID
+  POLYV_APP_SECRET  PolyV application secret
+  POLYV_DEBUG       Enable debug mode (set to 'true')
+
+Config File:
+  ~/.polyv-skills/config.json
+  {
+    "appId": "your-app-id",
+    "appSecret": "your-app-secret"
+  }
   POLYV_APP_SECRET  PolyV application secret
   POLYV_DEBUG       Enable debug mode (set to 'true')
 
@@ -598,18 +642,66 @@ function parseChannelArgs(args) {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
+    // Required parameters
     if (arg === '--name' && args[i + 1]) {
       params.name = args[++i];
-    } else if (arg === '--scene' && args[i + 1]) {
-      params.scene = args[++i];
-    } else if (arg === '--template' && args[i + 1]) {
-      params.template = args[++i];
     } else if (arg.startsWith('--name=')) {
       params.name = arg.split('=')[1];
+
+    // Scene (newScene) - basic parameter
+    } else if ((arg === '--scene' || arg === '--newScene') && args[i + 1]) {
+      params.newScene = args[++i];
     } else if (arg.startsWith('--scene=')) {
-      params.scene = arg.split('=')[1];
+      params.newScene = arg.split('=')[1];
+    } else if (arg.startsWith('--newScene=')) {
+      params.newScene = arg.split('=')[1];
+
+    // Template - basic parameter
+    } else if (arg === '--template' && args[i + 1]) {
+      params.template = args[++i];
     } else if (arg.startsWith('--template=')) {
       params.template = arg.split('=')[1];
+
+    // Optional advanced parameters
+    } else if (arg === '--channelPasswd' && args[i + 1]) {
+      params.channelPasswd = args[++i];
+    } else if (arg.startsWith('--channelPasswd=')) {
+      params.channelPasswd = arg.split('=')[1];
+
+    } else if (arg === '--pureRtcEnabled' && args[i + 1]) {
+      params.pureRtcEnabled = args[++i];
+    } else if (arg.startsWith('--pureRtcEnabled=')) {
+      params.pureRtcEnabled = arg.split('=')[1];
+
+    } else if (arg === '--type' && args[i + 1]) {
+      params.type = args[++i];
+    } else if (arg.startsWith('--type=')) {
+      params.type = arg.split('=')[1];
+
+    } else if (arg === '--linkMicLimit' && args[i + 1]) {
+      params.linkMicLimit = parseInt(args[++i], 10);
+    } else if (arg.startsWith('--linkMicLimit=')) {
+      params.linkMicLimit = parseInt(arg.split('=')[1], 10);
+
+    } else if (arg === '--categoryId' && args[i + 1]) {
+      params.categoryId = parseInt(args[++i], 10);
+    } else if (arg.startsWith('--categoryId=')) {
+      params.categoryId = parseInt(arg.split('=')[1], 10);
+
+    } else if (arg === '--startTime' && args[i + 1]) {
+      params.startTime = parseInt(args[++i], 10);
+    } else if (arg.startsWith('--startTime=')) {
+      params.startTime = parseInt(arg.split('=')[1], 10);
+
+    } else if (arg === '--endTime' && args[i + 1]) {
+      params.endTime = parseInt(args[++i], 10);
+    } else if (arg.startsWith('--endTime=')) {
+      params.endTime = parseInt(arg.split('=')[1], 10);
+
+    } else if (arg === '--labelData' && args[i + 1]) {
+      params.labelData = args[++i].split(',').map(id => parseInt(id.trim(), 10));
+    } else if (arg.startsWith('--labelData=')) {
+      params.labelData = arg.split('=')[1].split(',').map(id => parseInt(id.trim(), 10));
     }
   }
 
